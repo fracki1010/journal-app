@@ -1,18 +1,20 @@
 import { Google } from "@mui/icons-material"
-import { Button, Grid, Link, TextField, Typography } from "@mui/material"
+import { Alert, Button, Grid, Link, TextField, Typography } from "@mui/material"
 
 //Este es un alias que podemos colocarle al Link
 import { Link as RouterLink } from "react-router";
 import { AuthLayout } from "../layout/AuthLayout";
 import { useForm } from "../../hooks/useForm";
-import { checkingAuthentication, startGoogleSignIn } from "../../store/auth/thunks";
+import { checkingAuthentication, startGoogleSignIn, startLoginWithEmailPassword } from "../../store/auth/thunks";
 import { useDispatch, useSelector } from "react-redux";
 import { useMemo } from "react";
 
 
 export const LoginPage = () => {
 
-  const { status } = useSelector(state => state.auth);
+  const { status, errorMessage } = useSelector(state => state.auth);
+
+
 
   const dispatch = useDispatch();
 
@@ -25,15 +27,13 @@ export const LoginPage = () => {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    console.log({ email, password });
 
-    dispatch(checkingAuthentication(email, password))
+    dispatch( startLoginWithEmailPassword({ email, password, }) );
 
   }
 
 
   const onGoogleSignIn = () => {
-    console.log('onGoogleSignIn');
     dispatch(startGoogleSignIn());
 
   }
@@ -76,6 +76,17 @@ export const LoginPage = () => {
 
           {/* Botones */}
           <Grid container spacing={2} sx={{ mb: 1, mt: 1 }} >
+
+          <Grid
+             item
+              xs={12}
+              //Esto nos dice que si el errorMessage es false el display va a estar vacio
+              //Y si es true va a ser none, los dos !! hacen que si algoo es null, se combierta
+              //en false
+              display={ !!errorMessage ? '' : 'none' }
+              >
+              <Alert severity="error" >{ errorMessage }</Alert>
+            </Grid>
 
             <Grid item xs={12} sm={6} >
               <Button

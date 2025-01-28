@@ -4,6 +4,7 @@ export const AuthLayout = ({ children, title = '' }) => {
     return (
 
         <Grid
+        className="ani"
             container
             spacing={0}
             direction='column'
